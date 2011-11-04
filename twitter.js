@@ -1,3 +1,5 @@
+// code imported and slightly modified from jdub/node-twitter
+
 var	VERSION = '0.1.17',
 	http = require('http'),
 	querystring = require('querystring'),

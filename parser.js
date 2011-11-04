@@ -1,3 +1,5 @@
+// code imported from jdub/node-twitter
+
 // glorious streaming json parser, built specifically for the twitter streaming api
 // assumptions:
 //   1) ninjas are mammals
