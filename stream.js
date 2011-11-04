@@ -1,3 +1,6 @@
+// twaaaj streamer 
+// Authors: Axel Kittenberger (axkibe@gmail.com)
+
 "use strict";
 
 var util        = require('util');
@@ -124,12 +127,6 @@ function tweetStream(callback) {
 		if (callback) callback();
 	});
 }
-
-/*twit.verifyCredentials(
-function (data) {
-	util.puts('Verify');
-	util.puts(util.inspect(data));
-})*/
 
 /* startup sequence */
 var callstack = [];

@@ -1,3 +1,6 @@
+// twaaaj web interface 
+// Authors: Axel Kittenberger (axkibe@gmail.com)
+
 "use strict";
 
 var util        = require('util');
