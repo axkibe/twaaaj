@@ -7,9 +7,10 @@ Kittenberger and Julian Aussenhofer. It tracks up to 400 twitter users by ID
 streaming API. The twitter search API is not used.
 
 This projects uses following technologies:
- * node.js
- * mongodb
- * node-streamline
+
+* node.js
+* mongodb
+* node-streamline
 
 It contains a modified version of jdub/node-twitter. Changes are: use of
 'cookies' module instead of 'cookie', use of 'keygrip' and fixes to the Twitter
@@ -17,7 +18,7 @@ API like forced use of https.
 
 The project contains of two parts. First a streamer 'stream.js'. It streams the
 data from the Twitter API and puts its unmodified into the mongo database. Run
-it in a [http://www.gnu.org/s/screen/ screen] to keep running daemon-like.
+it in a [screen](http://www.gnu.org/s/screen/) to keep running daemon-like.
 
 Second is a web interface 'web_.js'. This is used to access the data from the
 database and produces overviews, TSV (tab seperated values) data or Gephi data
