@@ -56,7 +56,7 @@ product. Configuration is thus done simply directly in the source code.
 Additional Files
 ----------------
 
-Of course missing here is keys.js which contains the twitter API identification
+Of course missing here is keys.js which contains your Twitter API identification
 secrets. It should look like this:
 
 ```
