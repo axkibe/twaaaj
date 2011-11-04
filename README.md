@@ -15,12 +15,15 @@ It contains a modified version of jdub/node-twitter. Changes are: use of
 'cookies' module instead of 'cookie', use of 'keygrip' and fixes to the Twitter
 API like forced use of https.  
 
-The project contains of two parts. First a streamer 'stream-js'. It streams the
-data from the Twitter API and puts its unmodified into the mongo database.
-Secondly a web interface 'web_.js'. This is used to access the data from the
+The project contains of two parts. First a streamer 'stream.js'. It streams the
+data from the Twitter API and puts its unmodified into the mongo database. Run
+it in a [http://www.gnu.org/s/screen/ screen] to keep running daemon-like.
+
+Second is a web interface 'web_.js'. This is used to access the data from the
 database and produces overviews, TSV (tab seperated values) data or Gephi data
-files (.gefx). Splitting this services allows one to tinker with the web
-service without harming the download stream.
+files (.gefx).  Splitting this services allows one to tinker with the web
+service without harming the download stream. The web interface uses
+'node-streamline' so this one has to be used instead of node.
 
 This is a more a hack that develops as we need it than a finished OpenSource
 product. Configuration is thus done simply directly in the source code.

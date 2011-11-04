@@ -24,6 +24,7 @@ var dbclient    = null;
 var timeSpanStart = new Date('October 8, 2011 00:00:00').getTime();
 var timeSpanStop  = new Date('October 28, 2011 23:59:59').getTime();
 
+var keys = require('./keys');
 var twit = new twitter({
 	consumer_key:         keys.consumer_key,
 	consumer_secret:      keys.consumer_secret, 
