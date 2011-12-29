@@ -1,4 +1,4 @@
-twaaaj --- Twitter Archiver (Axel Axel Julian) 
+twaaaj --- Twitter Archiver (Axel Axel Julian)
 ==============================================
 
 This is the twitter archiver used in projects of Axel Maireder, Axel
@@ -14,7 +14,7 @@ This projects uses following technologies:
 
 It contains a modified version of jdub/node-twitter. Changes are: use of
 'cookies' module instead of 'cookie', use of 'keygrip' and fixes to the Twitter
-API like forced use of https.  
+API like forced use of https.
 
 For it needs following node.js modules installed with [npm](http://npmjs.org/)
 
