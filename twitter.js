@@ -6,6 +6,7 @@ var	VERSION = '0.1.17',
 	oauth = require('oauth'),
 	Cookies = require('cookies'),
 	streamparser = require('./parser');
+	util = require('util');
 
 function merge(defaults, options) {
 	defaults = defaults || {};
@@ -213,9 +214,9 @@ Twitter.prototype.stream = function(method, params, callback) {
 
 	var url = stream_base + '/' + escape(method) + '.json';
 
-/*	var request = this.oauth.post(url + '?' + querystring.stringify(params),
+	/*var request = this.oauth.post(url + '?' + querystring.stringify(params),
 		this.options.access_token_key,
-		this.options.access_token_secret);*/
+		this.options.access_token_secret); */
 
 	var request = this.oauth.post(url,
 		this.options.access_token_key,
@@ -223,6 +224,7 @@ Twitter.prototype.stream = function(method, params, callback) {
 
 	var stream = new streamparser();
 	stream.destroy = function() {
+		console.log('STREAM DESTROY!');
 		// FIXME: should we emit end/close on explicit destroy?
 		if ( typeof request.abort === 'function' )
 			request.abort(); // node v0.4.0
@@ -234,12 +236,16 @@ Twitter.prototype.stream = function(method, params, callback) {
 		// FIXME: Somehow provide chunks of the response when the stream is connected
 		// Pass HTTP response data to the parser, which raises events on the stream
 		response.on('data', function(chunk) {
+			//console.log('--> request data');
+			//console.log('<-- '+chunk.toString());
 			stream.receive(chunk);
 		});
 		response.on('error', function(error) {
+			//console.log('--> request error');
 			stream.emit('error', error);
 		});
 		response.on('end', function() {
+			//console.log('--> request end');
 			stream.emit('end', response);
 		});
 	});
@@ -286,7 +292,7 @@ Twitter.prototype.login = function(mount, success) {
 
 	// Save the mount point for use in gatekeeper
 	this.options.login_mount = mount = mount || '/twauth';
-	
+
 	// force signed
 	this.options.cookie_options.signed = true;
 
