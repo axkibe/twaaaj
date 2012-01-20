@@ -94,14 +94,17 @@ function tweetStream(callback) {
 
 		stream.on('error', function(error) {
 			log('--STREAM ERROR--');
-			log('Status: '+error.statusCode);
-			//log(util.inspect(error));
+			log(util.inspect(error)); // xxx
+			reconnectDelay *= 2;
+			if (reconnectDelay > 5 * 60 * 1000) reconnectDelay = 5 * 60 * 1000;
+			log('trying to reconnect in '+(reconnectDelay / 1000)+' seconds');
+			timers.setTimeout(tweetStream, reconnectDelay);
 		});
 
 		stream.on('end', function(error) {
 			log('--STREAM END--');
 			log('Status: '+error.statusCode);
-			//log(util.inspect(error));
+			log(util.inspect(error)); // xxx
 			reconnectDelay *= 2;
 			if (reconnectDelay > 5 * 60 * 1000) reconnectDelay = 5 * 60 * 1000;
 			log('trying to reconnect in '+(reconnectDelay / 1000)+' seconds');
