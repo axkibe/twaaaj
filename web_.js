@@ -8,7 +8,7 @@ var fs          = require('fs');
 var mongo       = require('mongodb');
 var twitter     = require('./twitter');
 var keygrip     = require('keygrip');
-var port        = 80;
+var port        = 8080;
 var userlist    = {axkibe : true, boomblitz : true, axelmaireder : true, snurb_dot_info : true};
 var freeip      = {'127.0.0.1': true};
 var keys        = require('./keys');
@@ -59,9 +59,9 @@ function webRessource(req, red, res, ctype, fname, _) {
 		data = fs.readFile('./ressources/'+fname, _) }
 	catch (err) {
 		util.log('Failed to serve web ressource ./ressources/'+fname);
-		web500(req, red, res); 
-		return; 
-	}; 
+		web500(req, red, res);
+		return;
+	};
 	res.writeHead(200, {'Content-Type': ctype});
 	res.end(data, 'binary');
 }
@@ -74,7 +74,9 @@ function webSignin(req, red, res) {
 	});
 }
 
-/* signout */
+/**
+| signout
+*/
 function webSignout(req, red, res) {
 	var cookie = twit.cookie(req, res);
 	twit.clearCookie(req, res);
@@ -267,7 +269,15 @@ function webDailyTopWords(req, red, res, _) {
 		var users = {};
 		function ensureUser(user) {
 			if (users[user]) return;
-			users[user] = {tweets: 0, m_out:0, m_in: 0, muq_out: 0, muq_in: 0, usertable_in: {}, usertable_out: {} };
+			users[user] = {
+				tweets: 0,
+				m_out:0,
+				m_in: 0,
+				muq_out: 0,
+				muq_in: 0,
+				usertable_in: {},
+				usertable_out: {}
+			};
 		}
 		var progress = 1;
 		var wordlist = {};
@@ -521,6 +531,23 @@ function webIndex(req, red, res) {
 	}
 }
 
+/**
+| return true if the tweet is not excluded.
+*/
+function isGoodTweet(user, text, mentions) {
+	var beruf = userBeruf(user);
+	if (beruf != 9 && beruf != 0) return true;
+
+	// cut away potential cuts
+	for (var a = 0; a < mentions.length; a++) {
+		beruf = userBeruf(mentions[a].user);
+		if (beruf != 9 && beruf != 0) return true;
+	}
+	//util.log('excluded '+user+'::' + text);
+	return false;
+}
+
+
 function webAllTweetsTsv(req, red, res, _) {
 	var cookie = twit.cookie(req, res);
 	if (!cookie) {
@@ -544,6 +571,7 @@ function webAllTweetsTsv(req, red, res, _) {
 		'Partei\t'+
 	   	'Tweet\n',
 		_);
+
    var tsdfirst = null;
    var first = true;
    var toffset = (new Date()).getTimezoneOffset() * 60000 * 2;
@@ -551,6 +579,10 @@ function webAllTweetsTsv(req, red, res, _) {
    var cursor = twdata.find({}, _);
    for (var obj = cursor.nextObject(_); obj; obj = cursor.nextObject(_)) {
 		process.nextTick(_);
+
+		var mentions = mentionTypes(obj.text);
+		if (!isGoodTweet(obj.user.screen_name, obj.text, mentions)) continue;
+
 	   	var ts = (obj.timestamp - toffset) / 1000;
 	   	var tsday = Math.floor(ts / (24 * 60 * 60));
 	   	var tshour = Math.floor((ts % (24 * 60 * 60)) / (60 * 60));
@@ -559,7 +591,6 @@ function webAllTweetsTsv(req, red, res, _) {
 	   		first = false;
 	   	}
 	   	var tsdiff = tsday - tsdfirst;
-		var mentions = mentionTypes(obj.text);
 		var mtype = 0;
 		for(var mi = 0; mi < mentions.length; mi++) {
 			if (mentions[mi].type > 1) mtype = mentions[mi].type;
@@ -737,7 +768,11 @@ function mentionTypes(text) {
 			var mention = ca[1];
 			if (mentiontable[mention]) continue;
 			mentiontable[mention] = true;
-			mentions.push({user: mention, type: type});
+
+			mentions.push({
+				user: mention,
+				type: type
+			});
 		}
 	}
 
@@ -803,6 +838,7 @@ function webMentions(req, red, res, _) {
 	var idlist = [];
 	var idtable = {};
 	res.write('<!-- userlist -->\n');
+
 	for(var screenname in twittapoll) {
 		var id = idlist.length;
 		idlist.push(screenname);
@@ -833,6 +869,7 @@ function webMentions(req, red, res, _) {
 			created_at: obj.created_at,
 			mentions: mentions,
 		});
+
 		if (typeof(idtable[screenname.toLowerCase()]) === 'undefined') {
 			var id = idlist.length;
 			idlist.push(screenname);
@@ -870,7 +907,6 @@ function webMentions(req, red, res, _) {
 	var edgeidfactory = 0;
 	res.write('  <edges>\n');
 
-	//for(obj2 = cursor2.nextObject(_); obj2 !== null; obj2 = cursor2.nextObject(_)) {
 	for(var ti = 0; ti < tweets.length; ti++) {
 		//process.nextTick(_);
 		//util.log(tweets.length);
