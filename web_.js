@@ -841,14 +841,19 @@ function webMentions(req, red, res, _) {
 
 	for(var screenname in twittapoll) {
 		var id = idlist.length;
+		var beruf  = userBeruf(screenname);
+		var gender = userGender(screenname);
+		var partei = userPartei(screenname);
+		if (beruf === 9) continue;
+
 		idlist.push(screenname);
 		idtable[screenname.toLowerCase()] = id;
 		write_(res,
 			'    <node id="'+id+'" label="'+screenname+'">'+
 			'<attvalues>'+
-				'<attvalue for="0" value="'+userBeruf(screenname)+'"/>'+
-				'<attvalue for="1" value="'+userGender(screenname)+'"/>'+
-				'<attvalue for="2" value="'+userPartei(screenname)+'"/>'+
+				'<attvalue for="0" value="'+beruf+'"/>'+
+				'<attvalue for="1" value="'+gender+'"/>'+
+				'<attvalue for="2" value="'+partei+'"/>'+
 			'</attvalues>'+
 			'</node>\n',
 			_);
@@ -863,6 +868,8 @@ function webMentions(req, red, res, _) {
 		var screenname = obj.user.screen_name;
 		process.nextTick(_);
 		var mentions = mentionTypes(obj.text);
+		if (!isGoodTweet(obj.user.screen_name, obj.text, mentions)) continue;
+
 		tweets.push({
 			screenname: screenname,
 			text: obj.text,

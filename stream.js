@@ -63,6 +63,9 @@ function connectDB(callback) {
 };
 
 var reconnectDelay = 500;
+var maxReconnectDelay = 5 * 60 * 1000;
+var timeoutDelay = 10 * 60 * 1000;
+
 function tweetStream(callback) {
 	log('--STREAM START--');
 	var followstr = follow.join(',');
@@ -74,11 +77,16 @@ function tweetStream(callback) {
 		process.exit(1);
 	}
 
+
 	twit.stream('statuses/filter', {'follow' : followstr, 'track' : trackstr}, function(stream) {
+		var timeoutID = timers.setTimeout(stream.destroy, timeoutDelay);
+
 		stream.on('data', function (data) {
+			timers.clearTimeout(timeoutID);
+			timeoutID = timers.setTimeout(stream.destroy, timeoutDelay);
 			reconnectDelay = 500;
 			if (!data.user || !data.text || !data.id) {
-				log('INVALID DATA:'+util.inspect(data));
+				log('Unknown data:'+util.inspect(data));
 				return;
 			}
 			data._id = data.id_str;
@@ -93,20 +101,20 @@ function tweetStream(callback) {
 		});
 
 		stream.on('error', function(error) {
+			timers.clearTimeout(timeoutID);
 			log('--STREAM ERROR--');
 			log(util.inspect(error)); // xxx
-			reconnectDelay *= 2;
-			if (reconnectDelay > 5 * 60 * 1000) reconnectDelay = 5 * 60 * 1000;
+			reconnectDelay = Math.min(reconnectDelay * 2, maxReconnectDelay);
 			log('trying to reconnect in '+(reconnectDelay / 1000)+' seconds');
 			timers.setTimeout(tweetStream, reconnectDelay);
 		});
 
 		stream.on('end', function(error) {
+			timers.clearTimeout(timeoutID);
 			log('--STREAM END--');
 			log('Status: '+error.statusCode);
 			log(util.inspect(error)); // xxx
-			reconnectDelay *= 2;
-			if (reconnectDelay > 5 * 60 * 1000) reconnectDelay = 5 * 60 * 1000;
+			reconnectDelay = Math.min(reconnectDelay * 2, maxReconnectDelay);
 			log('trying to reconnect in '+(reconnectDelay / 1000)+' seconds');
 			timers.setTimeout(tweetStream, reconnectDelay);
 		});
