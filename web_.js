@@ -316,10 +316,12 @@ function webQuery(req, red, res, _) {
 	res.write('<div id="query">');
 	res.write('<form action="/index">');
 
+	var ye1 = parseInt(red.query.ye1);
 	var mo1 = parseInt(red.query.mo1);
 	var da1 = parseInt(red.query.da1);
 	var ho1 = parseInt(red.query.ho1);
 	var mi1 = parseInt(red.query.mi1);
+	var ye2 = parseInt(red.query.ye2);
 	var mo2 = parseInt(red.query.mo2);
 	var da2 = parseInt(red.query.da2);
 	var ho2 = parseInt(red.query.ho2);
@@ -327,12 +329,14 @@ function webQuery(req, red, res, _) {
 
 	res.write('<input type="hidden" name="show" value="query"/>');
 	res.write('&gt;')
+	res.write(' Jahr <input type="text" name="ye1" value="'+(ye1||2012)+'"/>');
 	res.write(' Monat <input type="text" name="mo1" value="'+(mo1||10)+'"/>');
 	res.write(' Tag <input type="text" name="da1" value="'+(da1||8)+'"/>');
 	res.write(' Stunde <input type="text" name="ho1" value="'+(ho1||0)+'"/>')
 	res.write(' Minute <input type="text" name="mi1" value="'+(mi1||0)+'"/>')
 	res.write('<br/>');
 	res.write('&lt;')
+	res.write(' Jahr <input type="text" name="ye2" value="'+(ye2||2012)+'"/>');
 	res.write(' Monat <input type="text" name="mo2" value="'+(mo2||10)+'"/>');
 	res.write(' Tag <input type="text" name="da2" value="'+(da2||29)+'"/>');
 	res.write(' Stunde <input type="text" name="ho2" value="'+(ho2||0)+'"/>');
@@ -345,17 +349,19 @@ function webQuery(req, red, res, _) {
 	if (typeof(red.query.da1) !== 'undefined') {
 		res.write('<div id="content">');
 
+		if (ye1 !== ye1) { res.write('&gt; Jahr = keine Nummer'); return; }
 		if (mo1 !== mo1) { res.write('&gt; Monat = keine Nummer'); return; }
 		if (da1 !== da1) { res.write('&gt; Tag = keine Nummer'); return; }
 		if (ho1 !== ho1) { res.write('&gt; Stunde = keine Nummer'); return; }
 		if (mi1 !== mi1) { res.write('&gt; Minute = keine Nummer'); return; }
+		if (ye2 !== ye2) { res.write('&lt; Jahr = keine Nummer'); return; }
 		if (mo2 !== mo2) { res.write('&lt; Monat = keine Nummer'); return; }
 		if (da2 !== da2) { res.write('&lt; Tag = keine Nummer'); return; }
 		if (ho2 !== ho2) { res.write('&lt; Stunde = keine Nummer'); return; }
 		if (mi2 !== mi2) { res.write('&lt; Minute = keine Nummer'); return; }
 
-		var limit1 = new Date(2011, mo1 - 1, da1, ho1, mi1);
-		var limit2 = new Date(2011, mo2 - 1, da2, ho2, mi2);
+		var limit1 = new Date(ye1, mo1 - 1, da1, ho1, mi1);
+		var limit2 = new Date(ye2, mo2 - 1, da2, ho2, mi2);
 
 		res.write('Von '+limit1+'<br/>');
 		res.write('Bis '+limit2+'<br/>');
