@@ -20,7 +20,7 @@ npm install mondodb
 npm install oauth
 ```
 
-The project contains of two parts. First part is a streamer 'stream.js'. It streams the data from the Twitter API and puts its unmodified into the mongo database. Run it in a [screen](http://www.gnu.org/s/screen/) to keep it running  like a daemon.
+The project consits of two parts. First part is a streamer 'stream.js'. It streams the data from the Twitter API and puts its unmodified into the mongo database. Run it in a [screen](http://www.gnu.org/s/screen/) to keep it running  like a daemon.
 
 ```
 screen
