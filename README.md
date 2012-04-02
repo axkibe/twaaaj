@@ -56,7 +56,7 @@ module.exports = {
 }
 ```
 
-The users to follow by the stream server are to be there in users.json and look
+The users to follow by the stream server are specified by 'users.json' and should look
 like this:
 
 ```
@@ -73,5 +73,4 @@ like this:
 ]
 ```
 
-The webservice reads a CSV describing the users, these structures are very
-dependand on the project on hand.
+The webservice reads a CSV describing the users, which structure depends a lot on the project at hand.
